@@ -1,9 +1,11 @@
-capistrano-scm-copy
+capistrano-scm-localcopy
 ===================
 
 A copy strategy for Capistrano 3, which mimics the `:copy` scm of Capistrano 2.
 
 This will make Capistrano tar the current directory, upload it to the server(s) and then extract it in the release directory.
+
+Based on wercker's [capistrano-scm-copy](https://github.com/wercker/capistrano-scm-copy)
 
 Requirements
 ============
@@ -23,20 +25,20 @@ Installation
 
 First make sure you install the capistrano-scm-copy by adding it to your `Gemfile`:
 
-    gem "capistrano-scm-copy"
+    gem "capistrano-scm-localcopy"
 
 Add to Capfile:
 
-    require 'capistrano/copy'
+    require 'capistrano/localcopy'
     
-Then switch the `:scm` option to `:copy` in `config/deploy.rb`:
+Then switch the `:scm` option to `:localcopy` in `config/deploy.rb`:
 
-    set :scm, :copy
+    set :scm, :localcopy
     
 TODO
 ====
 
-I'm new to programming for Capistrano and even Ruby in general. So any feedback is appreciated. 
+Add unit tests.
 
 License
 =======
@@ -46,38 +48,8 @@ The MIT License (MIT)
 Changelog
 =========
 
-0.5.0
------
-
-- Fix issue related to `tar_roles` (see wercker/capistrano-scm-copy#15)
-
-0.4.0
------
-
-- Add support for `tar_roles` (see wercker/capistrano-scm-copy#8)
-
-0.3.0
------
-
-- Fix issue when running on Mac OS X (see wercker/capistrano-scm-copy#9)
-- Allow exclude directory to be an Array (see wercker/capistrano-scm-copy#9)
-
-0.2.0
------
-
-- Add `exclude_dir`
-
 0.1.0
 -----
 
-- Add `:include_dir`
+- Initial release, based on https://github.com/wercker/capistrano-scm-copy
 
-0.0.2
------
-
-- Add `task :set_current_revision` 
-
-0.0.1
------
-
-- Initial release

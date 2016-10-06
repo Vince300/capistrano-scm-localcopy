@@ -1,20 +1,31 @@
-namespace :copy do
+namespace :localcopy do
+  def archive_name
+    fetch(:archive_name, "archive.tar.gz")
+  end
 
-  archive_name = "archive.tar.gz"
-  include_dir  = fetch(:include_dir) || "*"
-  exclude_dir  = Array(fetch(:exclude_dir))
+  def include_dir
+    fetch(:include_dir, "*")
+  end
 
-  exclude_args = exclude_dir.map { |dir| "--exclude '#{dir}'"}
+  def exclude_dir
+    Array(fetch(:exclude_dir, []))
+  end
 
-  # Defalut to :all roles
-  tar_roles = fetch(:tar_roles, :all)
+  def exclude_args
+    exclude_dir.map { |dir| [ "--exclude", dir] }.flatten
+  end
 
-  tar_verbose = fetch(:tar_verbose, true) ? "v" : ""
+  def tar_roles
+    fetch(:tar_roles, :all)
+  end
+
+  def tar_verbose
+    fetch(:tar_verbose, true)
+  end
 
   desc "Archive files to #{archive_name}"
   file archive_name => FileList[include_dir].exclude(archive_name) do |t|
-    cmd = ["tar -c#{tar_verbose}zf #{t.name}", *exclude_args, *t.prerequisites]
-    sh cmd.join(' ')
+    sh "tar", "-c#{tar_verbose ? "v" : ""}zf", t.name, *exclude_args, *t.prerequisites
   end
 
   desc "Deploy #{archive_name} to release_path"
@@ -41,10 +52,9 @@ namespace :copy do
     File.delete archive_name if File.exists? archive_name
   end
 
-  after 'deploy:finished', 'copy:clean'
+  after 'deploy:finished', 'localcopy:clean'
 
   task :create_release => :deploy
   task :check
   task :set_current_revision
-
 end
